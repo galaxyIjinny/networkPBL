@@ -10,6 +10,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.io.DataInputStream;
@@ -130,14 +131,12 @@ public class JavaObjServer extends JFrame {
 		}
 	}
 
-	public void AppendText(String str) {
-		// textArea.append("사용자로부터 들어온 메세지 : " + str+"\n");
+	public void AppendText(String str) { // 입력받은 메시지
 		textArea.append(str + "\n");
 		textArea.setCaretPosition(textArea.getText().length());
 	}
 
-	public void AppendObject(ChatMsg msg) {
-		// textArea.append("사용자로부터 들어온 object : " + str+"\n");
+	public void AppendObject(ChatMsg msg) { // 입력받은 오브젝트
 		textArea.append("code = " + msg.getCode() + "\n");
 		textArea.append("id = " + msg.getId() + "\n");
 		textArea.append("data = " + msg.getData() + "\n");
@@ -159,6 +158,12 @@ public class JavaObjServer extends JFrame {
 		private Vector user_vc;
 		public String UserName = "";
 		public String UserStatus;
+		
+		ImageIcon imgcon0 =  new ImageIcon("");
+		public ImageIcon UserImg = imgcon0; // 등록 안해두면 기본 이미지
+		public String UserMessage = ""; // 상태메세지
+		
+		public String ChatRoom[];
 
 		public UserService(Socket client_socket) {
 			// TODO Auto-generated constructor stub
@@ -166,11 +171,6 @@ public class JavaObjServer extends JFrame {
 			this.client_socket = client_socket;
 			this.user_vc = UserVec;
 			try {
-//				is = client_socket.getInputStream();
-//				dis = new DataInputStream(is);
-//				os = client_socket.getOutputStream();
-//				dos = new DataOutputStream(os);
-
 				oos = new ObjectOutputStream(client_socket.getOutputStream());
 				oos.flush();
 				ois = new ObjectInputStream(client_socket.getInputStream());

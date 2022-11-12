@@ -36,12 +36,13 @@ import javax.swing.border.LineBorder;
 import javax.swing.JToggleButton;
 import javax.swing.JList;
 
-public class JavaObjClientView extends JFrame {
+public class JavaObjClientChatView extends JFrame {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
+	private JTextField txtInput;
 	private String UserName;
 	private JButton btnSend;
 	private static final int BUF_LEN = 128; // Windows 처럼 BUF_LEN 을 정의
@@ -65,16 +66,16 @@ public class JavaObjClientView extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public JavaObjClientView(String username, String ip_addr, String port_no) {
+	public JavaObjClientChatView(String username, String ip_addr, String port_no) {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 472, 668);
+		setBounds(100, 100, 394, 630);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 
 		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(92, 42, 352, 552);
+		scrollPane.setBounds(12, 10, 352, 471);
 		contentPane.add(scrollPane);
 
 		textArea = new JTextPane();
@@ -82,23 +83,35 @@ public class JavaObjClientView extends JFrame {
 		textArea.setFont(new Font("굴림체", Font.PLAIN, 14));
 		scrollPane.setViewportView(textArea);
 
-		lblUserName = new JLabel("Name");  // 상단 자기 이름, 프로필
+		txtInput = new JTextField();
+		txtInput.setBounds(74, 489, 209, 40);
+		contentPane.add(txtInput);
+		txtInput.setColumns(10);
+
+		btnSend = new JButton("Send");
+		btnSend.setFont(new Font("굴림", Font.PLAIN, 14));
+		btnSend.setBounds(295, 489, 69, 40);
+		contentPane.add(btnSend);
+
+		lblUserName = new JLabel("Name");
 		lblUserName.setBorder(new LineBorder(new Color(0, 0, 0)));
 		lblUserName.setBackground(Color.WHITE);
 		lblUserName.setFont(new Font("굴림", Font.BOLD, 14));
 		lblUserName.setHorizontalAlignment(SwingConstants.CENTER);
-		lblUserName.setBounds(12, 327, 62, 40);
+		lblUserName.setBounds(12, 539, 62, 40);
 		contentPane.add(lblUserName);
 		setVisible(true);
 
 		AppendText("User " + username + " connecting " + ip_addr + " " + port_no);
 		UserName = username;
-		//if (username ) // user 미리 등록? >> 프로필 불러오기
-		//UserImg =  
-		
 		lblUserName.setText(username);
+
+		imgBtn = new JButton("+");
+		imgBtn.setFont(new Font("굴림", Font.PLAIN, 16));
+		imgBtn.setBounds(12, 489, 50, 40);
+		contentPane.add(imgBtn);
 		
-		JButton btnNewButton = new JButton("종 료"); // 종료 버튼
+		JButton btnNewButton = new JButton("종 료");
 		btnNewButton.setFont(new Font("굴림", Font.PLAIN, 14));
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -107,28 +120,15 @@ public class JavaObjClientView extends JFrame {
 				System.exit(0);
 			}
 		});
-		btnNewButton.setBounds(12, 473, 69, 40);
+		btnNewButton.setBounds(295, 539, 69, 40);
 		contentPane.add(btnNewButton);
-		
-		JButton btnProfileButton = new JButton("친구"); // 프로필 버튼
-		btnProfileButton.setFont(new Font("굴림", Font.PLAIN, 14));
-		btnProfileButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				ChatMsg msg = new ChatMsg(UserName, "900", username);
-				SendObject(msg);
-			}
-		});
-		btnProfileButton.setBounds(12, 42, 69, 40);
-		contentPane.add(btnProfileButton);
-		
-		JButton btnChatListButton = new JButton("채팅"); // 채팅방 목록 버튼
-		btnChatListButton.setFont(new Font("굴림", Font.PLAIN, 14));
-		btnChatListButton.setBounds(11, 121, 69, 40);
-		contentPane.add(btnChatListButton);
-		
 
 		try {
 			socket = new Socket(ip_addr, Integer.parseInt(port_no));
+//			is = socket.getInputStream();
+//			dis = new DataInputStream(is);
+//			os = socket.getOutputStream();
+//			dos = new DataOutputStream(os);
 
 			oos = new ObjectOutputStream(socket.getOutputStream());
 			oos.flush();
@@ -140,8 +140,10 @@ public class JavaObjClientView extends JFrame {
 			
 			ListenNetwork net = new ListenNetwork();
 			net.start();
-			  //TextSendAction action = new TextSendAction();
-			  //btnSend.addActionListener(action);
+			TextSendAction action = new TextSendAction();
+			btnSend.addActionListener(action);
+			txtInput.addActionListener(action);
+			txtInput.requestFocus();
 			ImageSendAction action2 = new ImageSendAction();
 			imgBtn.addActionListener(action2);
 
@@ -187,6 +189,8 @@ public class JavaObjClientView extends JFrame {
 				} catch (IOException e) {
 					AppendText("ois.readObject() error");
 					try {
+//						dos.close();
+//						dis.close();
 						ois.close();
 						oos.close();
 						socket.close();
@@ -197,6 +201,24 @@ public class JavaObjClientView extends JFrame {
 					} // catch문 끝
 				} // 바깥 catch문끝
 
+			}
+		}
+	}
+
+	// keyboard enter key 치면 서버로 전송
+	class TextSendAction implements ActionListener {
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			// Send button을 누르거나 메시지 입력하고 Enter key 치면
+			if (e.getSource() == btnSend || e.getSource() == txtInput) {
+				String msg = null;
+				// msg = String.format("[%s] %s\n", UserName, txtInput.getText());
+				msg = txtInput.getText();
+				SendMessage(msg);
+				txtInput.setText(""); // 메세지를 보내고 나면 메세지 쓰는창을 비운다.
+				txtInput.requestFocus(); // 메세지를 보내고 커서를 다시 텍스트 필드로 위치시킨다
+				if (msg.contains("/exit")) // 종료 처리
+					System.exit(0);
 			}
 		}
 	}
