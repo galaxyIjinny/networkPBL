@@ -163,7 +163,8 @@ public class JavaObjServer extends JFrame {
 		public ImageIcon UserImg = imgcon0; // 등록 안해두면 기본 이미지
 		public String UserMessage = ""; // 상태메세지
 		
-		public String ChatRoom[];
+		public String ChatRoom[]; // 채팅방 목록
+		public String FriendName[]; // 친구 목록
 
 		public UserService(Socket client_socket) {
 			// TODO Auto-generated constructor stub
@@ -175,16 +176,6 @@ public class JavaObjServer extends JFrame {
 				oos.flush();
 				ois = new ObjectInputStream(client_socket.getInputStream());
 
-				// line1 = dis.readUTF();
-				// /login user1 ==> msg[0] msg[1]
-//				byte[] b = new byte[BUF_LEN];
-//				dis.read(b);		
-//				String line1 = new String(b);
-//
-//				//String[] msg = line1.split(" ");
-//				//UserName = msg[1].trim();
-//				UserStatus = "O"; // Online 상태
-//				Login();
 			} catch (Exception e) {
 				AppendText("userService error");
 			}
@@ -252,17 +243,11 @@ public class JavaObjServer extends JFrame {
 		// UserService Thread가 담당하는 Client 에게 1:1 전송
 		public void WriteOne(String msg) {
 			try {
-				// dos.writeUTF(msg);
-//				byte[] bb;
-//				bb = MakePacket(msg);
-//				dos.write(bb, 0, bb.length);
 				ChatMsg obcm = new ChatMsg("SERVER", "200", msg);
 				oos.writeObject(obcm);
 			} catch (IOException e) {
 				AppendText("dos.writeObject() error");
 				try {
-//					dos.close();
-//					dis.close();
 					ois.close();
 					oos.close();
 					client_socket.close();
@@ -321,24 +306,6 @@ public class JavaObjServer extends JFrame {
 		public void run() {
 			while (true) { // 사용자 접속을 계속해서 받기 위해 while문
 				try {
-					// String msg = dis.readUTF();
-//					byte[] b = new byte[BUF_LEN];
-//					int ret;
-//					ret = dis.read(b);
-//					if (ret < 0) {
-//						AppendText("dis.read() < 0 error");
-//						try {
-//							dos.close();
-//							dis.close();
-//							client_socket.close();
-//							Logout();
-//							break;
-//						} catch (Exception ee) {
-//							break;
-//						} // catch문 끝
-//					}
-//					String msg = new String(b, "euc-kr");
-//					msg = msg.trim(); // 앞뒤 blank NULL, \n 모두 제거
 					Object obcm = null;
 					String msg = null;
 					ChatMsg cm = null;
@@ -368,8 +335,14 @@ public class JavaObjServer extends JFrame {
 						String[] args = msg.split(" "); // 단어들을 분리한다.
 						if (args.length == 1) { // Enter key 만 들어온 경우 Wakeup 처리만 한다.
 							UserStatus = "O";
-						} else if (args[1].matches("/exit")) {
-							Logout();
+						} else if (cm.getCode().matches("300")) { // img
+							WriteAllObject(cm);
+						} else if (cm.getCode().matches("301")) { // file
+							WriteAllObject(cm);
+						}
+		
+						else if (args[1].matches("500")) { // 채팅방 리스트
+							
 							break;
 						} else if (args[1].matches("/list")) {
 							WriteOne("User list\n");
@@ -408,14 +381,10 @@ public class JavaObjServer extends JFrame {
 					} else if (cm.getCode().matches("400")) { // logout message 처리
 						Logout();
 						break;
-					} else if (cm.getCode().matches("300")) {
-						WriteAllObject(cm);
 					}
 				} catch (IOException e) {
 					AppendText("ois.readObject() error");
 					try {
-//						dos.close();
-//						dis.close();
 						ois.close();
 						oos.close();
 						client_socket.close();

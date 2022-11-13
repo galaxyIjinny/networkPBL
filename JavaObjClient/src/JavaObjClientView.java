@@ -124,7 +124,7 @@ public class JavaObjClientView extends JFrame {
 		btnNewButton.setBounds(12, 554, 69, 40);
 		contentPane.add(btnNewButton);
 		
-		JButton btnProfileButton = new JButton("친구"); // 프로필 버튼
+		JButton btnProfileButton = new JButton("친구"); // 메인화면 버튼
 		btnProfileButton.setFont(new Font("굴림", Font.PLAIN, 14));
 		/*btnProfileButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -137,8 +137,14 @@ public class JavaObjClientView extends JFrame {
 		
 		JButton btnChatListButton = new JButton("채팅"); // 채팅방 목록 버튼
 		btnChatListButton.setFont(new Font("굴림", Font.PLAIN, 14));
-		ChatListAction CLAction = new ChatListAction();
-		btnChatListButton.addActionListener(CLAction);
+		btnChatListButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				ChatMsg msg = new ChatMsg(UserName, "500", username);
+				SendObject(msg);
+			} // username에 맞는 채팅방 불러오기
+		});
+		//ChatListAction CLAction = new ChatListAction();
+		//btnChatListButton.addActionListener(CLAction);
 		btnChatListButton.setBounds(12, 170, 69, 40);
 		contentPane.add(btnChatListButton);
 		
