@@ -33,6 +33,9 @@ import java.awt.Image;
 import java.awt.Color;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.LineBorder;
+
+//import JavaObjClientMain.Myaction;
+
 import javax.swing.JToggleButton;
 import javax.swing.JList;
 
@@ -43,6 +46,8 @@ public class JavaObjClientView extends JFrame {
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	private String UserName;
+	private String IpAddr;
+	private String PortNo;
 	private JButton btnSend;
 	private static final int BUF_LEN = 128; // Windows 처럼 BUF_LEN 을 정의
 	private Socket socket; // 연결소켓
@@ -57,6 +62,7 @@ public class JavaObjClientView extends JFrame {
 	private JLabel lblUserName;
 	// private JTextArea textArea;
 	private JTextPane textArea;
+	private JTextPane myTextArea;
 
 	private Frame frame;
 	private FileDialog fd;
@@ -74,25 +80,33 @@ public class JavaObjClientView extends JFrame {
 		contentPane.setLayout(null);
 
 		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(92, 42, 352, 552);
+		scrollPane.setBounds(93, 76, 351, 518);
 		contentPane.add(scrollPane);
 
 		textArea = new JTextPane();
 		textArea.setEditable(true);
 		textArea.setFont(new Font("굴림체", Font.PLAIN, 14));
 		scrollPane.setViewportView(textArea);
+		
+		myTextArea = new JTextPane();
+		myTextArea.setFont(new Font("굴림체", Font.PLAIN, 14));
+		myTextArea.setEditable(true);
+		myTextArea.setBounds(92, 42, 152, 352);
+		scrollPane.setColumnHeaderView(myTextArea);
 
 		lblUserName = new JLabel("Name");  // 상단 자기 이름, 프로필
 		lblUserName.setBorder(new LineBorder(new Color(0, 0, 0)));
 		lblUserName.setBackground(Color.WHITE);
 		lblUserName.setFont(new Font("굴림", Font.BOLD, 14));
 		lblUserName.setHorizontalAlignment(SwingConstants.CENTER);
-		lblUserName.setBounds(12, 327, 62, 40);
+		lblUserName.setBounds(12, 20, 62, 40);
 		contentPane.add(lblUserName);
 		setVisible(true);
 
 		AppendText("User " + username + " connecting " + ip_addr + " " + port_no);
 		UserName = username;
+		IpAddr = ip_addr;
+		PortNo = port_no;
 		//if (username ) // user 미리 등록? >> 프로필 불러오기
 		//UserImg =  
 		
@@ -107,23 +121,25 @@ public class JavaObjClientView extends JFrame {
 				System.exit(0);
 			}
 		});
-		btnNewButton.setBounds(12, 473, 69, 40);
+		btnNewButton.setBounds(12, 554, 69, 40);
 		contentPane.add(btnNewButton);
 		
 		JButton btnProfileButton = new JButton("친구"); // 프로필 버튼
 		btnProfileButton.setFont(new Font("굴림", Font.PLAIN, 14));
-		btnProfileButton.addActionListener(new ActionListener() {
+		/*btnProfileButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				ChatMsg msg = new ChatMsg(UserName, "900", username);
 				SendObject(msg);
 			}
-		});
-		btnProfileButton.setBounds(12, 42, 69, 40);
+		});*/
+		btnProfileButton.setBounds(12, 97, 69, 40);
 		contentPane.add(btnProfileButton);
 		
 		JButton btnChatListButton = new JButton("채팅"); // 채팅방 목록 버튼
 		btnChatListButton.setFont(new Font("굴림", Font.PLAIN, 14));
-		btnChatListButton.setBounds(11, 121, 69, 40);
+		ChatListAction CLAction = new ChatListAction();
+		btnChatListButton.addActionListener(CLAction);
+		btnChatListButton.setBounds(12, 170, 69, 40);
 		contentPane.add(btnChatListButton);
 		
 
@@ -140,17 +156,13 @@ public class JavaObjClientView extends JFrame {
 			
 			ListenNetwork net = new ListenNetwork();
 			net.start();
-			  //TextSendAction action = new TextSendAction();
-			  //btnSend.addActionListener(action);
-			ImageSendAction action2 = new ImageSendAction();
-			imgBtn.addActionListener(action2);
 
 		} catch (NumberFormatException | IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			AppendText("connect error");
 		}
-
+		
 	}
 
 	// Server Message를 수신해서 화면에 표시
@@ -176,10 +188,9 @@ public class JavaObjClientView extends JFrame {
 					} else
 						continue;
 					switch (cm.getCode()) {
-					case "200": // chat message
-						AppendText(msg);
+					case "100": // 로그인 시
 						break;
-					case "300": // Image 첨부
+					case "500": // 채팅 버튼 >> 채팅 리스트
 						AppendText("[" + cm.getId() + "]");
 						AppendImage(cm.img);
 						break;
@@ -293,18 +304,12 @@ public class JavaObjClientView extends JFrame {
 	// Server에게 network으로 전송
 	public void SendMessage(String msg) {
 		try {
-			// dos.writeUTF(msg);
-//			byte[] bb;
-//			bb = MakePacket(msg);
-//			dos.write(bb, 0, bb.length);
 			ChatMsg obcm = new ChatMsg(UserName, "200", msg);
 			oos.writeObject(obcm);
 		} catch (IOException e) {
 			// AppendText("dos.write() error");
 			AppendText("oos.writeObject() error");
 			try {
-//				dos.close();
-//				dis.close();
 				ois.close();
 				oos.close();
 				socket.close();
@@ -324,4 +329,14 @@ public class JavaObjClientView extends JFrame {
 			AppendText("SendObject Error");
 		}
 	}
+	
+	class ChatListAction implements ActionListener // 내부클래스로 액션 이벤트 처리 클래스. 채팅 목록
+	{
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			JavaObjClientChatListView view = new JavaObjClientChatListView(UserName, IpAddr, PortNo);
+			setVisible(false);
+		}
+	}
+	
 }
