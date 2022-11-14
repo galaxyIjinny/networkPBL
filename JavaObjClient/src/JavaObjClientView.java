@@ -51,10 +51,6 @@ public class JavaObjClientView extends JFrame {
 	private JButton btnSend;
 	private static final int BUF_LEN = 128; // Windows 처럼 BUF_LEN 을 정의
 	private Socket socket; // 연결소켓
-	private InputStream is;
-	private OutputStream os;
-	private DataInputStream dis;
-	private DataOutputStream dos;
 
 	private ObjectInputStream ois;
 	private ObjectOutputStream oos;
@@ -68,6 +64,10 @@ public class JavaObjClientView extends JFrame {
 	private FileDialog fd;
 	private JButton imgBtn;
 
+	public JavaObjClientView view;
+	public JavaObjClientChatListView CLview;
+	//public JavaObjClientNotice noticeview;
+	
 	/**
 	 * Create the frame.
 	 */
@@ -197,8 +197,7 @@ public class JavaObjClientView extends JFrame {
 					case "100": // 로그인 시
 						break;
 					case "500": // 채팅 버튼 >> 채팅 리스트
-						AppendText("[" + cm.getId() + "]");
-						AppendImage(cm.img);
+						AppendText("test Client");
 						break;
 					}
 				} catch (IOException e) {

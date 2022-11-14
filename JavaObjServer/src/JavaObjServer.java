@@ -335,16 +335,9 @@ public class JavaObjServer extends JFrame {
 						String[] args = msg.split(" "); // 단어들을 분리한다.
 						if (args.length == 1) { // Enter key 만 들어온 경우 Wakeup 처리만 한다.
 							UserStatus = "O";
-						} else if (cm.getCode().matches("300")) { // img
-							WriteAllObject(cm);
-						} else if (cm.getCode().matches("301")) { // file
-							WriteAllObject(cm);
-						}
-		
-						else if (args[1].matches("500")) { // 채팅방 리스트
-							
-							break;
-						} else if (args[1].matches("/list")) {
+						} 
+						
+						else if (args[1].matches("/list")) {
 							WriteOne("User list\n");
 							WriteOne("Name\tStatus\n");
 							WriteOne("-----------------------------\n");
@@ -378,10 +371,45 @@ public class JavaObjServer extends JFrame {
 							//WriteAll(msg + "\n"); // Write All
 							WriteAllObject(cm);
 						}
-					} else if (cm.getCode().matches("400")) { // logout message 처리
+					} 
+					else if (cm.getCode().matches("300")) { // img
+						WriteAllObject(cm);
+					} else if (cm.getCode().matches("301")) { // file
+						WriteAllObject(cm);
+					}
+					else if (cm.getCode().matches("400")) { // logout message 처리
 						Logout();
 						break;
+					} 
+					else if (cm.getCode().matches("500")) { // 채팅방 리스트
+						AppendText("test Server");
 					}
+					else if (cm.getCode().matches("600")) { // 이모티콘
+						
+					} 
+					else if (cm.getCode().matches("700")) { // 공지사항
+						
+					} else if (cm.getCode().matches("701")) { // 공지사항 보기 버튼
+						
+					} else if (cm.getCode().matches("702")) { // 공지사항 삭제
+						
+					}
+					else if (cm.getCode().matches("800")) { // 투표
+						
+					} else if (cm.getCode().matches("801")) { // 투표 선택
+						
+					} else if (cm.getCode().matches("802")) { // 투표 결과
+						
+					}
+					else if (cm.getCode().matches("900")) { // 메인 화면
+						
+					}
+					
+					else if (cm.getCode().matches("1000")) { // 채팅방 초대
+						
+					}
+					
+					
 				} catch (IOException e) {
 					AppendText("ois.readObject() error");
 					try {
