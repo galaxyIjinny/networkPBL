@@ -88,25 +88,24 @@ public class JavaObjClientChatListView extends JFrame {
 		scrollPane.setBounds(93, 76, 351, 518);
 		contentPane.add(scrollPane);
 		
+		textArea = new JTextPane();
+		textArea.setEditable(true);
+		textArea.setFont(new Font("굴림체", Font.PLAIN, 14));
+		scrollPane.setViewportView(textArea);
 		//채팅방 목록
 		myChatRoom = chatrooms;
 		/*ChatMsg msg = new ChatMsg(UserName, "500", username);
 		for (int i = 0; i < user_vc.size(); i++) {
 			UserService user = (UserService) user_vc.elementAt(i);
 			if (user.UserStatus == "O")
-		}
-		myChatRoom = 
+		}*/
 		chatList = new JList(myChatRoom);
 		chatList.setBounds(0, 0, 1, 1);
 		chatList.setFont(new Font("굴림체", Font.PLAIN, 14));
-		scrollPane.add(chatList);*/
+		scrollPane.add(chatList);
 		
-		txtInput = new JTextField();
-		txtInput.setBounds(74, 489, 209, 40);
-		contentPane.add(txtInput);
-		txtInput.setColumns(10);
 		
-
+		
 		lblUserName = new JLabel("Name");
 		lblUserName.setBorder(new LineBorder(new Color(0, 0, 0)));
 		lblUserName.setBackground(Color.WHITE);
@@ -116,7 +115,7 @@ public class JavaObjClientChatListView extends JFrame {
 		contentPane.add(lblUserName);
 		setVisible(true);
 
-		AppendText("User " + username + " connecting " + ip_addr + " " + port_no);
+		AppendText("User chatroom" + username + ip_addr + " " + port_no);
 		UserName = username;
 		IpAddr = ip_addr;
 		PortNo = port_no;
@@ -156,7 +155,7 @@ public class JavaObjClientChatListView extends JFrame {
 		contentPane.add(btnChatListButton);
 
 		try {
-			//socket = new Socket(ip_addr, Integer.parseInt(port_no));
+			socket = new Socket(ip_addr, Integer.parseInt(port_no));
 			//화면이동 간 socket처리 x >> 버튼 시행마다 인원 수 증가 문제
 			oos = new ObjectOutputStream(socket.getOutputStream());
 			oos.flush();
@@ -166,8 +165,8 @@ public class JavaObjClientChatListView extends JFrame {
 			//ChatMsg obcm = new ChatMsg(UserName, "100", "Hello");
 			//SendObject(obcm);
 			
-			//ListenNetwork net = new ListenNetwork();
-			//net.start();
+			ListenNetwork net = new ListenNetwork();
+			net.start();
 
 		} catch (NumberFormatException | IOException e) {
 			// TODO Auto-generated catch block

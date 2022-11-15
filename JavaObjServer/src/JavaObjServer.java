@@ -265,7 +265,7 @@ public class JavaObjServer extends JFrame {
 					if (user == this) {
 						ChatMsg obcm = new ChatMsg(user.UserName, "500", "chatID");
 						obcm.chatrooms = user.ChatRoom;
-						
+						//채팅방 참가자
 						oos.writeObject(obcm);
 					}
 				}
@@ -393,9 +393,7 @@ public class JavaObjServer extends JFrame {
 					} 
 					else if (cm.getCode().matches("500")) { // 채팅방 리스트
 						AppendText("test Server");
-						//ChatMsg obcm = new ChatMsg(cm.getId(), "500", );
-						//SendObject(obcm);
-						// 채팅방 정보 전송
+						ViewChatList(cm); // 채팅방 정보 전송
 						
 					}
 					else if (cm.getCode().matches("600")) { // 이모티콘
