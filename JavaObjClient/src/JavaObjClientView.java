@@ -48,7 +48,7 @@ public class JavaObjClientView extends JFrame {
 	private String UserName;
 	private String IpAddr;
 	private String PortNo;
-	private JButton btnSend;
+	private String myChatRoom[] = null;
 	private static final int BUF_LEN = 128; // Windows 처럼 BUF_LEN 을 정의
 	private Socket socket; // 연결소켓
 
@@ -64,8 +64,8 @@ public class JavaObjClientView extends JFrame {
 	private FileDialog fd;
 	private JButton imgBtn;
 
-	public JavaObjClientView view;
-	public JavaObjClientChatListView CLview;
+	public JavaObjClientView Mainview;
+	public JavaObjClientChatListView ChatListview;
 	//public JavaObjClientNotice noticeview;
 	
 	/**
@@ -137,14 +137,18 @@ public class JavaObjClientView extends JFrame {
 		
 		JButton btnChatListButton = new JButton("채팅"); // 채팅방 목록 버튼
 		btnChatListButton.setFont(new Font("굴림", Font.PLAIN, 14));
-		btnChatListButton.addActionListener(new ActionListener() {
+		/*btnChatListButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				ChatMsg msg = new ChatMsg(UserName, "500", username);
 				SendObject(msg);
 			} // username에 맞는 채팅방 불러오기
-		});
-		//ChatListAction CLAction = new ChatListAction();
-		//btnChatListButton.addActionListener(CLAction);
+		});*/
+		ChatListAction CLAction = new ChatListAction();
+		btnChatListButton.addActionListener(CLAction);
+		//JavaObjClientChatListView view = new JavaObjClientChatListView(UserName, IpAddr, PortNo);
+		//setVisible(false);
+		//Mainview = this;
+		//ChatListView
 		btnChatListButton.setBounds(12, 170, 69, 40);
 		contentPane.add(btnChatListButton);
 		
@@ -196,8 +200,15 @@ public class JavaObjClientView extends JFrame {
 					switch (cm.getCode()) {
 					case "100": // 로그인 시
 						break;
-					case "500": // 채팅 버튼 >> 채팅 리스트
-						AppendText("test Client");
+					case "500": // 채팅 버튼 >> 채팅 리스트. 받은 정보로 화면 전환
+						//AppendText("test Client");
+						//ChatListAction CLAction = new ChatListAction();
+						//btnChatListButton.addActionListener(CLAction);
+						
+						myChatRoom = cm.chatrooms;
+						//JavaObjClientChatListView view = new JavaObjClientChatListView(UserName, IpAddr, PortNo, myChatRoom);
+						//setVisible(false);
+						
 						break;
 					}
 				} catch (IOException e) {
@@ -339,7 +350,9 @@ public class JavaObjClientView extends JFrame {
 	{
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			JavaObjClientChatListView view = new JavaObjClientChatListView(UserName, IpAddr, PortNo);
+			ChatMsg msg = new ChatMsg(UserName, "500", UserName);
+			SendObject(msg);
+			JavaObjClientChatListView view = new JavaObjClientChatListView(UserName, IpAddr, PortNo, myChatRoom);
 			setVisible(false);
 		}
 	}

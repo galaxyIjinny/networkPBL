@@ -146,11 +146,6 @@ public class JavaObjServer extends JFrame {
 	// User 당 생성되는 Thread
 	// Read One 에서 대기 -> Write All
 	class UserService extends Thread {
-		private InputStream is;
-		private OutputStream os;
-		private DataInputStream dis;
-		private DataOutputStream dos;
-
 		private ObjectInputStream ois;
 		private ObjectOutputStream oos;
 
@@ -163,7 +158,8 @@ public class JavaObjServer extends JFrame {
 		public ImageIcon UserImg = imgcon0; // 등록 안해두면 기본 이미지
 		public String UserMessage = ""; // 상태메세지
 		
-		public String ChatRoom[]; // 채팅방 목록
+		public String ChatRoom[]; // 채팅방 목록(참가중인 id)
+		public String ChatRoomFiend[]; // 채팅방 참가자
 		public String FriendName[]; // 친구 목록
 
 		public UserService(Socket client_socket) {
@@ -261,6 +257,24 @@ public class JavaObjServer extends JFrame {
 				Logout(); // 에러가난 현재 객체를 벡터에서 지운다
 			}
 		}
+		
+		public void ViewChatList(Object ob) { // 500
+			try {
+				for (int i = 0; i < user_vc.size(); i++) {
+					UserService user = (UserService) user_vc.elementAt(i);
+					if (user == this) {
+						ChatMsg obcm = new ChatMsg(user.UserName, "500", "chatID");
+						obcm.chatrooms = user.ChatRoom;
+						
+						oos.writeObject(obcm);
+					}
+				}
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			Logout(); // 에러가난 현재 객체를 벡터에서 지운다
+		}
 
 		// 귓속말 전송
 		public void WritePrivate(String msg) {
@@ -346,10 +360,6 @@ public class JavaObjServer extends JFrame {
 								WriteOne(user.UserName + "\t" + user.UserStatus + "\n");
 							}
 							WriteOne("-----------------------------\n");
-						} else if (args[1].matches("/sleep")) {
-							UserStatus = "S";
-						} else if (args[1].matches("/wakeup")) {
-							UserStatus = "O";
 						} else if (args[1].matches("/to")) { // 귓속말
 							for (int i = 0; i < user_vc.size(); i++) {
 								UserService user = (UserService) user_vc.elementAt(i);
@@ -383,6 +393,10 @@ public class JavaObjServer extends JFrame {
 					} 
 					else if (cm.getCode().matches("500")) { // 채팅방 리스트
 						AppendText("test Server");
+						//ChatMsg obcm = new ChatMsg(cm.getId(), "500", );
+						//SendObject(obcm);
+						// 채팅방 정보 전송
+						
 					}
 					else if (cm.getCode().matches("600")) { // 이모티콘
 						
