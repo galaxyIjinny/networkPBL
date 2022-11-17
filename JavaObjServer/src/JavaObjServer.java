@@ -94,7 +94,7 @@ public class JavaObjServer extends JFrame {
 				try {
 					socket = new ServerSocket(Integer.parseInt(txtPortNumber.getText()));
 				} catch (NumberFormatException | IOException e1) {
-					// TODO Auto-generated catch block
+					AppendText("Server :: 소켓 생성 오류!!");
 					e1.printStackTrace();
 				}
 				AppendText("Chat Server Running..");
@@ -158,22 +158,23 @@ public class JavaObjServer extends JFrame {
 		public ImageIcon UserImg = imgcon0; // 등록 안해두면 기본 이미지
 		public String UserMessage = ""; // 상태메세지
 		
-		public String ChatRoom[]; // 채팅방 목록(참가중인 id)
-		public String ChatRoomFiend[]; // 채팅방 참가자
-		public String FriendName[]; // 친구 목록
+		public Vector ChatRoom; // 채팅방 목록(참가중인 id)
+		public Vector ChatRoomFiend; // 채팅방 참가자
+		public Vector FriendName; // 친구 목록
 
 		public UserService(Socket client_socket) {
 			// TODO Auto-generated constructor stub
 			// 매개변수로 넘어온 자료 저장
 			this.client_socket = client_socket;
 			this.user_vc = UserVec;
+			
 			try {
 				oos = new ObjectOutputStream(client_socket.getOutputStream());
 				oos.flush();
 				ois = new ObjectInputStream(client_socket.getInputStream());
 
 			} catch (Exception e) {
-				AppendText("userService error");
+				AppendText("Server :: userService error");
 			}
 		}
 
@@ -228,7 +229,7 @@ public class JavaObjServer extends JFrame {
 			try {
 				bb = msg.getBytes("euc-kr");
 			} catch (UnsupportedEncodingException e) {
-				// TODO Auto-generated catch block
+				AppendText("Server :: 메시지 패킷 생성 오류!!");
 				e.printStackTrace();
 			}
 			for (i = 0; i < bb.length; i++)
@@ -251,7 +252,7 @@ public class JavaObjServer extends JFrame {
 					ois = null;
 					oos = null;
 				} catch (IOException e1) {
-					// TODO Auto-generated catch block
+					AppendText("Server :: writeOne 오류!!");
 					e1.printStackTrace();
 				}
 				Logout(); // 에러가난 현재 객체를 벡터에서 지운다
@@ -264,13 +265,31 @@ public class JavaObjServer extends JFrame {
 					UserService user = (UserService) user_vc.elementAt(i);
 					if (user == this) {
 						ChatMsg obcm = new ChatMsg(user.UserName, "500", "chatID");
-						obcm.chatrooms = user.ChatRoom;
+						obcm.chatuserlists = user.ChatRoom;
 						//채팅방 참가자
 						oos.writeObject(obcm);
 					}
 				}
 			} catch (IOException e1) {
-				// TODO Auto-generated catch block
+				AppendText("Server :: 500 오류!!");
+				e1.printStackTrace();
+			}
+			Logout(); // 에러가난 현재 객체를 벡터에서 지운다
+		}
+		
+		public void ViewFriendList(Object ob) { // 900
+			try {
+				for (int i = 0; i < user_vc.size(); i++) {
+					UserService user = (UserService) user_vc.elementAt(i);
+					if (user == this) {
+						ChatMsg obcm = new ChatMsg(user.UserName, "900", "chatID");
+						obcm.chatuserlists = user.ChatRoom;
+						//채팅방 참가자
+						oos.writeObject(obcm);
+					}
+				}
+			} catch (IOException e1) {
+				AppendText("Server :: 900 오류!!");
 				e1.printStackTrace();
 			}
 			Logout(); // 에러가난 현재 객체를 벡터에서 지운다
@@ -310,7 +329,7 @@ public class JavaObjServer extends JFrame {
 					ois = null;
 					oos = null;				
 				} catch (IOException e1) {
-					// TODO Auto-generated catch block
+					AppendText("Server :: writeObject 오류!!");
 					e1.printStackTrace();
 				}
 				Logout();
@@ -328,7 +347,7 @@ public class JavaObjServer extends JFrame {
 					try {
 						obcm = ois.readObject();
 					} catch (ClassNotFoundException e) {
-						// TODO Auto-generated catch block
+						AppendText("Server :: readObject 오류!!");
 						e.printStackTrace();
 						return;
 					}
@@ -414,7 +433,8 @@ public class JavaObjServer extends JFrame {
 						
 					}
 					else if (cm.getCode().matches("900")) { // 메인 화면
-						
+						AppendText("900 receive");
+						ViewFriendList(cm);
 					}
 					
 					else if (cm.getCode().matches("1000")) { // 채팅방 초대
