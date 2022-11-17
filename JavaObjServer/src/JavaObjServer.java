@@ -191,6 +191,36 @@ public class JavaObjServer extends JFrame {
 			WriteAll(msg); // 나를 제외한 다른 User들에게 전송
 			AppendText("사용자 " + "[" + UserName + "] 퇴장. 현재 참가자 수 " + UserVec.size());
 		}
+		
+		public void Writeloginlist(String msg) {
+			try {
+				ChatMsg obcm = new ChatMsg("SERVER", "250", msg); // login 시 userlist -> client 
+				oos.writeObject(obcm);
+			} catch (IOException e) {
+				AppendText("dos.writeObject() error");
+				try {
+					ois.close();
+					oos.close();
+					client_socket.close();
+					client_socket = null;
+					ois = null;
+					oos = null;
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				Logout(); // 에러가난 현재 객체를 벡터에서 지운다
+			}
+		}
+		
+		public void WriteAlllist(String str) {
+			for (int i = 0; i < user_vc.size(); i++) {
+				UserService user = (UserService) user_vc.elementAt(i);
+				if (user.UserStatus == "O")
+					user.Writeloginlist(str);
+			}
+		}
+		
 
 		// 모든 User들에게 방송. 각각의 UserService Thread의 WriteONe() 을 호출한다.
 		public void WriteAll(String str) {
@@ -343,7 +373,16 @@ public class JavaObjServer extends JFrame {
 						UserName = cm.getId();
 						UserStatus = "O"; // Online 상태
 						Login();
-					} else if (cm.getCode().matches("200")) {
+						for(int i=0; i<user_vc.size(); i++) {
+							UserService user = (UserService) user_vc.elementAt(i);
+							WriteAlllist(user.UserName);
+						}
+					}else if (cm.getCode().matches("250")) {
+						for(int i=0; i<user_vc.size(); i++) {
+							UserService user = (UserService) user_vc.elementAt(i);
+							WriteAlllist(user.UserName + "\n");
+						}	
+					}else if (cm.getCode().matches("200")) {
 						msg = String.format("[%s] %s", cm.getId(), cm.getData());
 						AppendText(msg); // server 화면에 출력
 						String[] args = msg.split(" "); // 단어들을 분리한다.
