@@ -32,19 +32,15 @@ import java.awt.Font;
 import java.awt.Frame;
 import java.awt.Image;
 import java.awt.Color;
-import java.awt.Container;
-
 import javax.swing.border.BevelBorder;
 import javax.swing.border.LineBorder;
 
-//import JavaObjServer.UserService;
-
-//import JavaObjClientView.ChatListAction;
+//import JavaObjClientMain.Myaction;
 
 import javax.swing.JToggleButton;
 import javax.swing.JList;
-//채팅방 목록
-public class JavaObjClientChatListView extends JPanel {
+
+public class JavaObjClientFriendListView extends JPanel {
 	/**
 	 * 
 	 */
@@ -53,72 +49,54 @@ public class JavaObjClientChatListView extends JPanel {
 	private String UserName;
 	private String IpAddr;
 	private String PortNo;
-	private String ChatRoom[];
-	
+	private Vector<String> myChatRoom;
 	private static final int BUF_LEN = 128; // Windows 처럼 BUF_LEN 을 정의
 	private Socket socket; // 연결소켓
 
 	private ObjectInputStream ois;
 	private ObjectOutputStream oos;
 
-	private JLabel chatroomLabel;
+	private JLabel lblUserName;
 	// private JTextArea textArea;
 	private JTextPane textArea;
+	private JTextPane myTextArea;
 
-	private JFrame frame;
+	private Frame frame;
 	private FileDialog fd;
-	
-	private Vector myChatRoom;
-	
-	public JavaObjClientFriendListView FriendListview;
 
+	public JavaObjClientChatListView ChatListview;
+	//public JavaObjClientNotice noticeview;
+	
 	/**
 	 * Create the frame.
 	 */
-	public JavaObjClientChatListView(String username, JavaObjClientView mainview) {
+	public JavaObjClientFriendListView(String username, JavaObjClientView mainview) {
 		frame = mainview;
 		//setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 200, 200);
-		setBackground(new Color(255, 255, 255));
-		setBorder(new EmptyBorder(5, 5, 5, 5));
+		setBounds(100, 100, 472, 668);
+		contentPane = new JPanel();
+		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		//setContentPane(contentPane);
-		setLayout(null);
-		//frame.getContentPane().add(this);
-		
-		Container con = frame.getContentPane();
-		con.add(this);
-		
-		chatroomLabel = new JLabel();
-		chatroomLabel.setText(username);
-		chatroomLabel.setBounds(100, 100, 50, 50);
-		add(chatroomLabel);
-		
+		frame.add(contentPane);
+		contentPane.setLayout(null);
+//
 //		JScrollPane scrollPane = new JScrollPane();
 //		scrollPane.setBounds(93, 76, 351, 518);
 //		contentPane.add(scrollPane);
-//		
+			
 		textArea = new JTextPane();
 		textArea.setEditable(true);
 		textArea.setFont(new Font("굴림체", Font.PLAIN, 14));
-		add(textArea);
+		contentPane.add(textArea);
+	
 		
+			
+		mainview.AppendText("User " + username + "friend lists");
 		
-		ChatMsg msg = new ChatMsg(UserName, "200", "clist");
-		//msg.setChatroom("chat11");
-		mainview.SendObject(msg);
-		//채팅방 목록
-		//myChatRoom = chatrooms;
-		/*ChatMsg msg = new ChatMsg(UserName, "500", username);
-		for (int i = 0; i < user_vc.size(); i++) {
-			UserService user = (UserService) user_vc.elementAt(i);
-			if (user.UserStatus == "O")
-		}*/
-		
-		UserName = username;
-		
-		mainview.AppendText("User chatroom" + username);
+		ChatMsg obcm = new ChatMsg(UserName, "200", "flist");
+		mainview.SendObject(obcm);
 		setVisible(true);
-
+		
 	}
-
+	
 }

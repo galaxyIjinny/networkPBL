@@ -1,6 +1,6 @@
 
-// JavaObjClientView.java ObjecStram ±â¹İ Client
-//½ÇÁúÀûÀÎ Ã¤ÆÃ Ã¢
+// JavaObjClientView.java ObjecStram ê¸°ë°˜ Client
+//ì‹¤ì§ˆì ì¸ ì±„íŒ… ì°½
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
 import java.awt.FileDialog;
@@ -34,11 +34,7 @@ import java.awt.Image;
 import java.awt.Color;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.LineBorder;
-
-//import JavaObjClientMain.Myaction;
-
 import javax.swing.JToggleButton;
-import javax.swing.JList;
 
 public class JavaObjClientView extends JFrame {
 	/**
@@ -50,16 +46,15 @@ public class JavaObjClientView extends JFrame {
 	private String IpAddr;
 	private String PortNo;
 	private Vector<String> myChatRoom;
-	private static final int BUF_LEN = 128; // Windows Ã³·³ BUF_LEN À» Á¤ÀÇ
-	private Socket socket; // ¿¬°á¼ÒÄÏ
+	private static final int BUF_LEN = 128; // Windows ì²˜ëŸ¼ BUF_LEN ì„ ì •ì˜
+	private Socket socket; // ì—°ê²°ì†Œì¼“
 
 	private ObjectInputStream ois;
 	private ObjectOutputStream oos;
 
-	private JLabel lblUserName;
+	private JLabel labelArea;
 	// private JTextArea textArea;
 	private JTextPane textArea;
-	private JTextPane myTextArea;
 
 	private Frame frame;
 	private FileDialog fd;
@@ -67,7 +62,7 @@ public class JavaObjClientView extends JFrame {
 
 	public JavaObjClientView Mainview = this;
 	public JavaObjClientChatListView ChatListview;
-	public JavaObjClientFriendView Friendview;
+	public JavaObjClientFriendListView FriendListview;
 	//public JavaObjClientNotice noticeview;
 	
 	/**
@@ -80,44 +75,27 @@ public class JavaObjClientView extends JFrame {
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
-
-		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(93, 76, 351, 518);
-		contentPane.add(scrollPane);
-
-		 
+		setVisible(true);
 		
+//		JScrollPane scrollPane = new JScrollPane();
+//		scrollPane.setBounds(93, 76, 351, 518);
+//		contentPane.add(scrollPane);
+
 		textArea = new JTextPane();
 		textArea.setEditable(true);
-		textArea.setFont(new Font("±¼¸²Ã¼", Font.PLAIN, 14));
-		scrollPane.setViewportView(textArea);
+		textArea.setFont(new Font("êµ´ë¦¼ì²´", Font.PLAIN, 14));
+		contentPane.add(textArea);
 		
-		myTextArea = new JTextPane();
-		myTextArea.setFont(new Font("±¼¸²Ã¼", Font.PLAIN, 14));
-		myTextArea.setEditable(true);
-		myTextArea.setBounds(92, 42, 152, 352);
-		scrollPane.setColumnHeaderView(myTextArea);
-
-		lblUserName = new JLabel("Name");  // »ó´Ü ÀÚ±â ÀÌ¸§, ÇÁ·ÎÇÊ
-		lblUserName.setBorder(new LineBorder(new Color(0, 0, 0)));
-		lblUserName.setBackground(Color.WHITE);
-		lblUserName.setFont(new Font("±¼¸²", Font.BOLD, 14));
-		lblUserName.setHorizontalAlignment(SwingConstants.CENTER);
-		lblUserName.setBounds(12, 20, 62, 40);
-		contentPane.add(lblUserName);
-		setVisible(true);
 
 		AppendText("User " + username + " connecting " + ip_addr + " " + port_no);
 		UserName = username;
 		IpAddr = ip_addr;
 		PortNo = port_no;
-		//if (username ) // user ¹Ì¸® µî·Ï? >> ÇÁ·ÎÇÊ ºÒ·¯¿À±â
+		//if (username ) // user ë¯¸ë¦¬ ë“±ë¡? >> í”„ë¡œí•„ ë¶ˆëŸ¬ì˜¤ê¸°
 		//UserImg =  
 		
-		lblUserName.setText(username);
-		
-		JButton btnNewButton = new JButton("Á¾ ·á"); // Á¾·á ¹öÆ°
-		btnNewButton.setFont(new Font("±¼¸²", Font.PLAIN, 14));
+		JButton btnNewButton = new JButton("ì¢… ë£Œ"); // ì¢…ë£Œ ë²„íŠ¼
+		btnNewButton.setFont(new Font("êµ´ë¦¼", Font.PLAIN, 14));
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				ChatMsg msg = new ChatMsg(UserName, "400", "Bye");
@@ -128,34 +106,29 @@ public class JavaObjClientView extends JFrame {
 		btnNewButton.setBounds(12, 554, 69, 40);
 		contentPane.add(btnNewButton);
 		
-		JButton btnProfileButton = new JButton("Ä£±¸"); // ¸ŞÀÎÈ­¸é ¹öÆ°
-		btnProfileButton.setFont(new Font("±¼¸²", Font.PLAIN, 14));
+		JButton btnProfileButton = new JButton("ì¹œêµ¬"); // ë©”ì¸í™”ë©´ ë²„íŠ¼
+		btnProfileButton.setFont(new Font("êµ´ë¦¼", Font.PLAIN, 14));
 		btnProfileButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				ChatMsg msg = new ChatMsg(UserName, "900", username);
 				SendObject(msg);
-				Friendview = new JavaObjClientFriendView(UserName, Mainview);
+				FriendListview = new JavaObjClientFriendListView(UserName, Mainview);
 				setVisible(false);
 			}
 		});
 		btnProfileButton.setBounds(12, 97, 69, 40);
 		contentPane.add(btnProfileButton);
 		
-		JButton btnChatListButton = new JButton("Ã¤ÆÃ"); // Ã¤ÆÃ¹æ ¸ñ·Ï ¹öÆ°
-		btnChatListButton.setFont(new Font("±¼¸²", Font.PLAIN, 14));
+		JButton btnChatListButton = new JButton("ì±„íŒ…"); // ì±„íŒ…ë°© ëª©ë¡ ë²„íŠ¼
+		btnChatListButton.setFont(new Font("êµ´ë¦¼", Font.PLAIN, 14));
 		btnChatListButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				ChatMsg msg = new ChatMsg(UserName, "500", username);
 				SendObject(msg);
 				ChatListview = new JavaObjClientChatListView(UserName, Mainview);
-				setVisible(false);
-			} // username¿¡ ¸Â´Â Ã¤ÆÃ¹æ ºÒ·¯¿À±â
+				//ChatListview.setVisible(true);
+			} // usernameì— ë§ëŠ” ì±„íŒ…ë°© ë¶ˆëŸ¬ì˜¤ê¸°
 		});
-		//ChatListAction CLAction = new ChatListAction();
-		//btnChatListButton.addActionListener(CLAction);
-		//JavaObjClientChatListView view = new JavaObjClientChatListView(UserName, IpAddr, PortNo);
-		//setVisible(false);
-		//ChatListView
 		btnChatListButton.setBounds(12, 170, 69, 40);
 		contentPane.add(btnChatListButton);
 		
@@ -187,7 +160,7 @@ public class JavaObjClientView extends JFrame {
 	
 	
 
-	// Server Message¸¦ ¼ö½ÅÇØ¼­ È­¸é¿¡ Ç¥½Ã
+	// Server Messageë¥¼ ìˆ˜ì‹ í•´ì„œ í™”ë©´ì— í‘œì‹œ
 	class ListenNetwork extends Thread {
 		public void run() {
 			while (true) {
@@ -210,13 +183,11 @@ public class JavaObjClientView extends JFrame {
 					} else
 						continue;
 					switch (cm.getCode()) {
-					case "100": // ·Î±×ÀÎ ½Ã
+					case "100": // ë¡œê·¸ì¸ ì‹œ
 						break;
-					case "500": // Ã¤ÆÃ ¹öÆ° >> Ã¤ÆÃ ¸®½ºÆ®. ¹ŞÀº Á¤º¸·Î È­¸é ÀüÈ¯
-						//AppendText("test Client");
-						//ChatListAction CLAction = new ChatListAction();
-						//btnChatListButton.addActionListener(CLAction);
-						//search >> chatroomid1.~~·Î 
+					case "500": // ì±„íŒ… ë²„íŠ¼ >> ì±„íŒ… ë¦¬ìŠ¤íŠ¸. ë°›ì€ ì •ë³´ë¡œ í™”ë©´ ì „í™˜
+						AppendText("test Client");
+						//search >> chatroomid1.~~ë¡œ 
 						//myChatRoom = cm.chatroomId;
 						//JavaObjClientChatListView view = new JavaObjClientChatListView(UserName, IpAddr, PortNo, myChatRoom);
 						//setVisible(false);
@@ -233,8 +204,8 @@ public class JavaObjClientView extends JFrame {
 						break;
 					} catch (Exception ee) {
 						break;
-					} // catch¹® ³¡
-				} // ¹Ù±ù catch¹®³¡
+					} // catchë¬¸ ë
+				} // ë°”ê¹¥ catchë¬¸ë
 
 			}
 		}
@@ -243,10 +214,10 @@ public class JavaObjClientView extends JFrame {
 	class ImageSendAction implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			// ¾×¼Ç ÀÌº¥Æ®°¡ sendBtnÀÏ¶§ ¶Ç´Â textField ¿¡¼¼ Enter key Ä¡¸é
+			// ì•¡ì…˜ ì´ë²¤íŠ¸ê°€ sendBtnì¼ë•Œ ë˜ëŠ” textField ì—ì„¸ Enter key ì¹˜ë©´
 			if (e.getSource() == imgBtn) {
-				frame = new Frame("ÀÌ¹ÌÁöÃ·ºÎ");
-				fd = new FileDialog(frame, "ÀÌ¹ÌÁö ¼±ÅÃ", FileDialog.LOAD);
+				frame = new Frame("ì´ë¯¸ì§€ì²¨ë¶€");
+				fd = new FileDialog(frame, "ì´ë¯¸ì§€ ì„ íƒ", FileDialog.LOAD);
 				// frame.setVisible(true);
 				// fd.setDirectory(".\\");
 				fd.setVisible(true);
@@ -263,18 +234,18 @@ public class JavaObjClientView extends JFrame {
 
 	public void AppendIcon(ImageIcon icon) {
 		int len = textArea.getDocument().getLength();
-		// ³¡À¸·Î ÀÌµ¿
+		// ëìœ¼ë¡œ ì´ë™
 		textArea.setCaretPosition(len);
 		textArea.insertIcon(icon);
 	}
 
-	// È­¸é¿¡ Ãâ·Â
+	// í™”ë©´ì— ì¶œë ¥
 	public void AppendText(String msg) {
 		// textArea.append(msg + "\n");
 		//AppendIcon(icon1);
-		msg = msg.trim(); // ¾ÕµÚ blank¿Í \nÀ» Á¦°ÅÇÑ´Ù.
+		msg = msg.trim(); // ì•ë’¤ blankì™€ \nì„ ì œê±°í•œë‹¤.
 		int len = textArea.getDocument().getLength();
-		// ³¡À¸·Î ÀÌµ¿
+		// ëìœ¼ë¡œ ì´ë™
 		textArea.setCaretPosition(len);
 		textArea.replaceSelection(msg + "\n");
 	}
@@ -287,13 +258,13 @@ public class JavaObjClientView extends JFrame {
 		double ratio;
 		width = ori_icon.getIconWidth();
 		height = ori_icon.getIconHeight();
-		// Image°¡ ³Ê¹« Å©¸é ÃÖ´ë °¡·Î ¶Ç´Â ¼¼·Î 200 ±âÁØÀ¸·Î Ãà¼Ò½ÃÅ²´Ù.
+		// Imageê°€ ë„ˆë¬´ í¬ë©´ ìµœëŒ€ ê°€ë¡œ ë˜ëŠ” ì„¸ë¡œ 200 ê¸°ì¤€ìœ¼ë¡œ ì¶•ì†Œì‹œí‚¨ë‹¤.
 		if (width > 200 || height > 200) {
-			if (width > height) { // °¡·Î »çÁø
+			if (width > height) { // ê°€ë¡œ ì‚¬ì§„
 				ratio = (double) height / width;
 				width = 200;
 				height = (int) (width * ratio);
-			} else { // ¼¼·Î »çÁø
+			} else { // ì„¸ë¡œ ì‚¬ì§„
 				ratio = (double) width / height;
 				height = 200;
 				width = (int) (height * ratio);
@@ -307,10 +278,10 @@ public class JavaObjClientView extends JFrame {
 		textArea.setCaretPosition(len);
 		textArea.replaceSelection("\n");
 		// ImageViewAction viewaction = new ImageViewAction();
-		// new_icon.addActionListener(viewaction); // ³»ºÎÅ¬·¡½º·Î ¾×¼Ç ¸®½º³Ê¸¦ »ó¼Ó¹ŞÀº Å¬·¡½º·Î
+		// new_icon.addActionListener(viewaction); // ë‚´ë¶€í´ë˜ìŠ¤ë¡œ ì•¡ì…˜ ë¦¬ìŠ¤ë„ˆë¥¼ ìƒì†ë°›ì€ í´ë˜ìŠ¤ë¡œ
 	}
 
-	// Windows Ã³·³ message Á¦¿ÜÇÑ ³ª¸ÓÁö ºÎºĞÀº NULL ·Î ¸¸µé±â À§ÇÑ ÇÔ¼ö
+	// Windows ì²˜ëŸ¼ message ì œì™¸í•œ ë‚˜ë¨¸ì§€ ë¶€ë¶„ì€ NULL ë¡œ ë§Œë“¤ê¸° ìœ„í•œ í•¨ìˆ˜
 	public byte[] MakePacket(String msg) {
 		byte[] packet = new byte[BUF_LEN];
 		byte[] bb = null;
@@ -329,7 +300,7 @@ public class JavaObjClientView extends JFrame {
 		return packet;
 	}
 
-	// Server¿¡°Ô networkÀ¸·Î Àü¼Û
+	// Serverì—ê²Œ networkìœ¼ë¡œ ì „ì†¡
 	public void SendMessage(String msg) {
 		try {
 			ChatMsg obcm = new ChatMsg(UserName, "200", msg);
@@ -349,23 +320,12 @@ public class JavaObjClientView extends JFrame {
 		}
 	}
 
-	public void SendObject(Object ob) { // ¼­¹ö·Î ¸Ş¼¼Áö¸¦ º¸³»´Â ¸Ş¼Òµå
+	public void SendObject(Object ob) { // ì„œë²„ë¡œ ë©”ì„¸ì§€ë¥¼ ë³´ë‚´ëŠ” ë©”ì†Œë“œ
 		try {
 			oos.writeObject(ob);
 		} catch (IOException e) {
-			// textArea.append("¸Ş¼¼Áö ¼Û½Å ¿¡·¯!!\n");
+			// textArea.append("ë©”ì„¸ì§€ ì†¡ì‹  ì—ëŸ¬!!\n");
 			AppendText("SendObject Error");
-		}
-	}
-	
-	class ChatListAction implements ActionListener // ³»ºÎÅ¬·¡½º·Î ¾×¼Ç ÀÌº¥Æ® Ã³¸® Å¬·¡½º. Ã¤ÆÃ ¸ñ·Ï
-	{
-		@Override
-		public void actionPerformed(ActionEvent e) {
-			ChatMsg msg = new ChatMsg(UserName, "500", UserName);
-			SendObject(msg);
-			JavaObjClientChatListView view = new JavaObjClientChatListView(UserName, Mainview);
-			setVisible(false);
 		}
 	}
 	
