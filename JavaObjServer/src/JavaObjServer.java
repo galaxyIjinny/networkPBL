@@ -158,9 +158,9 @@ public class JavaObjServer extends JFrame {
 		public ImageIcon UserImg = imgcon0; // 등록 안해두면 기본 이미지
 		public String UserMessage = ""; // 상태메세지
 		
-		public Vector ChatRoom; // 채팅방 목록(참가중인 id)
-		public Vector ChatRoomFiend; // 채팅방 참가자
-		public Vector FriendName; // 친구 목록
+		public String ChatRoom; // 채팅방 목록(참가중인 id)
+		public String ChatRoomFiend; // 채팅방 참가자
+		public String FriendName; // 친구 목록
 
 		public UserService(Socket client_socket) {
 			// TODO Auto-generated constructor stub
@@ -179,11 +179,31 @@ public class JavaObjServer extends JFrame {
 		}
 
 		public void Login() {
-			AppendText("새로운 참가자 " + UserName + " 입장.");
-			WriteOne("Welcome to Java chat server\n");
-			WriteOne(UserName + "님 환영합니다.\n"); // 연결된 사용자에게 정상접속을 알림
-			String msg = "[" + UserName + "]님이 입장 하였습니다.\n";
-			WriteOthers(msg); // 아직 user_vc에 새로 입장한 user는 포함되지 않았다.
+			AppendText("서버에 " + UserName + " 님이 입장하셨습니다.");
+			try {
+				for (int i = 0; i < user_vc.size(); i++) {
+					UserService user = (UserService) user_vc.elementAt(i);
+					FriendName.concat(user.UserName + " ");
+				}
+				ChatMsg obcm = new ChatMsg("SERVER", "100", FriendName);
+				oos.writeObject(obcm);
+			} catch (IOException e) {
+				AppendText("dos.writeObject() error");
+				try {
+					ois.close();
+					oos.close();
+					client_socket.close();
+					client_socket = null;
+					ois = null;
+					oos = null;
+				} catch (IOException e1) {
+					AppendText("Server :: writeOne 오류!!");
+					e1.printStackTrace();
+				}
+				Logout(); // 에러가난 현재 객체를 벡터에서 지운다
+			}
+			//WriteOne(UserName + "님 환영합니다.\n"); // 연결된 사용자에게 정상접속을 알림
+			//WriteOthers(msg); // 아직 user_vc에 새로 입장한 user는 포함되지 않았다.
 		}
 
 		public void Logout() {

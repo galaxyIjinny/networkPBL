@@ -10,8 +10,8 @@ class ChatMsg implements Serializable {
 	private String code; // 100:로그인, 400:로그아웃, 200:채팅메시지, 300:Image
 	private String data;
 	public ImageIcon img;
-	public String chatroomId;
-	public Vector<String> chatuserlists;
+	public String chatroomid;
+	public String chatuserlists;
 
 	public ChatMsg(String id, String code, String msg) {
 		this.id = id;
@@ -43,13 +43,24 @@ class ChatMsg implements Serializable {
 		this.data = data;
 	}
 
+	public ImageIcon getImg() {
+		return img;
+	}
 	public void setImg(ImageIcon img) {
 		this.img = img;
 	}
-	public void setChatroomId(String chatroomId) {
-		this.chatroomId = chatroomId;
+	
+	public String getChatroomid() {
+		return chatroomid;
 	}
-	public void setChatuserlists(Vector chatuserlists) {
+	public void setChatroomId(String chatroomid) {
+		this.chatroomid = chatroomid;
+	}
+	
+	public String getChatuserlists() {
+		return chatuserlists;
+	}
+	public void setChatuserlists(String chatuserlists) {
 		this.chatuserlists = chatuserlists;
 	}
 }

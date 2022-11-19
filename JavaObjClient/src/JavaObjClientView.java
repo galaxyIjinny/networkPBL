@@ -41,11 +41,13 @@ public class JavaObjClientView extends JFrame {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private JPanel contentPane;
+	private JPanel sideContentpane;
+	private JPanel listContentpane;
 	private String UserName;
 	private String IpAddr;
 	private String PortNo;
-	private Vector<String> myChatRoom;
+	private String myChatRooms;
+	private String myFriends;
 	private static final int BUF_LEN = 128; // Windows 처럼 BUF_LEN 을 정의
 	private Socket socket; // 연결소켓
 
@@ -71,12 +73,17 @@ public class JavaObjClientView extends JFrame {
 	public JavaObjClientView(String username, String ip_addr, String port_no) {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 472, 668);
-		contentPane = new JPanel();
-		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-		setContentPane(contentPane);
-		contentPane.setLayout(null);
+		sideContentpane = new JPanel();
+		sideContentpane.setBorder(new EmptyBorder(5, 5, 5, 5));
+		setContentPane(sideContentpane);
+		sideContentpane.setLayout(null);
 		setVisible(true);
 		
+		listContentpane = new JPanel();
+		listContentpane.setBackground(new Color(223, 255, 240));
+		listContentpane.setBounds(132, 97, 275, 497);
+		sideContentpane.add(listContentpane);
+//		
 //		JScrollPane scrollPane = new JScrollPane();
 //		scrollPane.setBounds(93, 76, 351, 518);
 //		contentPane.add(scrollPane);
@@ -84,7 +91,7 @@ public class JavaObjClientView extends JFrame {
 		textArea = new JTextPane();
 		textArea.setEditable(true);
 		textArea.setFont(new Font("굴림체", Font.PLAIN, 14));
-		contentPane.add(textArea);
+		sideContentpane.add(textArea);
 		
 
 		AppendText("User " + username + " connecting " + ip_addr + " " + port_no);
@@ -104,7 +111,7 @@ public class JavaObjClientView extends JFrame {
 			}
 		});
 		btnNewButton.setBounds(12, 554, 69, 40);
-		contentPane.add(btnNewButton);
+		sideContentpane.add(btnNewButton);
 		
 		JButton btnProfileButton = new JButton("친구"); // 메인화면 버튼
 		btnProfileButton.setFont(new Font("굴림", Font.PLAIN, 14));
@@ -113,11 +120,11 @@ public class JavaObjClientView extends JFrame {
 				ChatMsg msg = new ChatMsg(UserName, "900", username);
 				SendObject(msg);
 				FriendListview = new JavaObjClientFriendListView(UserName, Mainview);
-				setVisible(false);
+				//setVisible(false);
 			}
 		});
 		btnProfileButton.setBounds(12, 97, 69, 40);
-		contentPane.add(btnProfileButton);
+		sideContentpane.add(btnProfileButton);
 		
 		JButton btnChatListButton = new JButton("채팅"); // 채팅방 목록 버튼
 		btnChatListButton.setFont(new Font("굴림", Font.PLAIN, 14));
@@ -126,11 +133,13 @@ public class JavaObjClientView extends JFrame {
 				ChatMsg msg = new ChatMsg(UserName, "500", username);
 				SendObject(msg);
 				ChatListview = new JavaObjClientChatListView(UserName, Mainview);
+				listContentpane.add(ChatListview);
+				setVisible(false);
 				//ChatListview.setVisible(true);
 			} // username에 맞는 채팅방 불러오기
 		});
 		btnChatListButton.setBounds(12, 170, 69, 40);
-		contentPane.add(btnChatListButton);
+		sideContentpane.add(btnChatListButton);
 		
 
 		try {
@@ -184,6 +193,7 @@ public class JavaObjClientView extends JFrame {
 						continue;
 					switch (cm.getCode()) {
 					case "100": // 로그인 시
+						myFriends = cm.getChatuserlists();
 						break;
 					case "500": // 채팅 버튼 >> 채팅 리스트. 받은 정보로 화면 전환
 						AppendText("test Client");
@@ -328,5 +338,4 @@ public class JavaObjClientView extends JFrame {
 			AppendText("SendObject Error");
 		}
 	}
-	
 }
