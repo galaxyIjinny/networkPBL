@@ -77,7 +77,6 @@ public class JavaObjClientView extends JFrame {
 		sideContentpane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(sideContentpane);
 		sideContentpane.setLayout(null);
-		setVisible(true);
 		
 		listContentpane = new JPanel();
 		listContentpane.setBackground(new Color(223, 255, 240));
@@ -134,14 +133,14 @@ public class JavaObjClientView extends JFrame {
 				SendObject(msg);
 				ChatListview = new JavaObjClientChatListView(UserName, Mainview);
 				listContentpane.add(ChatListview);
-				setVisible(false);
 				//ChatListview.setVisible(true);
 			} // username에 맞는 채팅방 불러오기
 		});
 		btnChatListButton.setBounds(12, 170, 69, 40);
 		sideContentpane.add(btnChatListButton);
 		
-
+		setVisible(true);
+		
 		try {
 			socket = new Socket(ip_addr, Integer.parseInt(port_no));
 
@@ -196,11 +195,12 @@ public class JavaObjClientView extends JFrame {
 						myFriends = cm.getChatuserlists();
 						break;
 					case "500": // 채팅 버튼 >> 채팅 리스트. 받은 정보로 화면 전환
-						AppendText("test Client");
+						//AppendText("test Client");
 						//search >> chatroomid1.~~로 
 						//myChatRoom = cm.chatroomId;
 						//JavaObjClientChatListView view = new JavaObjClientChatListView(UserName, IpAddr, PortNo, myChatRoom);
 						//setVisible(false);
+						myChatRooms = cm.getChatroomid();
 						
 						break;
 					}

@@ -40,6 +40,10 @@ public class JavaObjServer extends JFrame {
 	private ServerSocket socket; // 서버소켓
 	private Socket client_socket; // accept() 에서 생성된 client 소켓
 	private Vector UserVec = new Vector(); // 연결된 사용자를 저장할 벡터
+	private Vector RoomVec = new Vector(); // 전체 채팅방 관리를 위한 벡터
+	
+	public String Chatroom_id; // 채팅방 목록(참가중인 id)
+	public String Chatroom_user; // 채팅방 참가자
 	private static final int BUF_LEN = 128; // Windows 처럼 BUF_LEN 을 정의
 
 	/**
@@ -143,12 +147,43 @@ public class JavaObjServer extends JFrame {
 		textArea.setCaretPosition(textArea.getText().length());
 	}
 
+	// 채팅방 관리
+	class ChatService {
+		private Vector room_vc;
+		public String Chatroom_id;
+		public String Chatroom_user;
+		public ImageIcon Chatimg;
+		
+		public ChatService(String id, String userlist) {
+			this.room_vc = RoomVec;
+			this.Chatroom_id = id;
+			this.Chatroom_user = userlist;
+		}
+		
+		public String getChatroom_id() {
+			return Chatroom_id;
+		}
+
+		public void setChatroom_id(String Chatroom_id) {
+			this.Chatroom_id = Chatroom_id;
+		}
+		
+		public String getChatroom_user() {
+			return Chatroom_id;
+		}
+
+		public void setChatroom_user(String Chatroom_user) {
+			this.Chatroom_user = Chatroom_user;
+		}
+	}
+	
 	// User 당 생성되는 Thread
 	// Read One 에서 대기 -> Write All
 	class UserService extends Thread {
 		private ObjectInputStream ois;
 		private ObjectOutputStream oos;
 
+		private ChatService chatservice;
 		private Socket client_socket;
 		private Vector user_vc;
 		public String UserName = "";
@@ -157,10 +192,8 @@ public class JavaObjServer extends JFrame {
 		ImageIcon imgcon0 =  new ImageIcon("");
 		public ImageIcon UserImg = imgcon0; // 등록 안해두면 기본 이미지
 		public String UserMessage = ""; // 상태메세지
-		
-		public String ChatRoom; // 채팅방 목록(참가중인 id)
-		public String ChatRoomFiend; // 채팅방 참가자
 		public String FriendName; // 친구 목록
+		
 
 		public UserService(Socket client_socket) {
 			// TODO Auto-generated constructor stub
@@ -281,6 +314,16 @@ public class JavaObjServer extends JFrame {
 		
 		public void ViewChatList(Object ob) { // 500
 			try {
+				ChatMsg obcm = (ChatMsg) ob;
+				String chatId = obcm.getChatroomid();
+				String[] args = chatId.split(" "); // 단어들을 분리한다.
+				int check = 0;
+				//if (args[i] == chatroom_id)
+				for (int j = 0; j < chatservice.room_vc.size(); j ++) {
+					ChatService chat = (ChatService) chatservice.room_vc.elementAt(j);
+					if (args[check] == chat.Chatroom_id) {
+						chatId.concat(chat);
+					}
 				for (int i = 0; i < user_vc.size(); i++) {
 					UserService user = (UserService) user_vc.elementAt(i);
 					if (user == this) {
@@ -288,6 +331,7 @@ public class JavaObjServer extends JFrame {
 						obcm.chatuserlists = user.ChatRoom;
 						//채팅방 참가자
 						oos.writeObject(obcm);
+						}
 					}
 				}
 			} catch (IOException e1) {
@@ -299,14 +343,16 @@ public class JavaObjServer extends JFrame {
 		
 		public void ViewFriendList(Object ob) { // 900
 			try {
+				String userlist = new String();
 				for (int i = 0; i < user_vc.size(); i++) {
 					UserService user = (UserService) user_vc.elementAt(i);
-					if (user == this) {
-						ChatMsg obcm = new ChatMsg(user.UserName, "900", "chatID");
-						obcm.chatuserlists = user.ChatRoom;
-						//채팅방 참가자
-						oos.writeObject(obcm);
-					}
+//					if (user == this) {
+//						//본인인 경우
+//					}
+					userlist.concat(user.UserName + " ");
+					ChatMsg obcm = new ChatMsg(user.UserName, "900", "chatID");
+					obcm.chatuserlists = userlist;
+					oos.writeObject(obcm);
 				}
 			} catch (IOException e1) {
 				AppendText("Server :: 900 오류!!");
