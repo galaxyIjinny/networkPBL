@@ -32,6 +32,8 @@ import java.awt.Font;
 import java.awt.Frame;
 import java.awt.Image;
 import java.awt.Color;
+import java.awt.Container;
+
 import javax.swing.border.BevelBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.JToggleButton;
@@ -43,6 +45,7 @@ public class JavaObjClientView extends JFrame {
 	private static final long serialVersionUID = 1L;
 	private JPanel sideContentpane;
 	private JPanel listContentpane;
+	private JPanel mainCon;
 	private String UserName;
 	private String IpAddr;
 	private String PortNo;
@@ -61,6 +64,7 @@ public class JavaObjClientView extends JFrame {
 	private Frame frame;
 	private FileDialog fd;
 	private JButton imgBtn;
+	Container con;
 
 	public JavaObjClientView Mainview = this;
 	public JavaObjClientChatListView ChatListview;
@@ -72,17 +76,22 @@ public class JavaObjClientView extends JFrame {
 	 */
 	public JavaObjClientView(String username, String ip_addr, String port_no) {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 472, 668);
+		setBounds(100, 100, 472, 668);	
+		mainCon = new JPanel();
+		mainCon.setLayout(null);
+		setContentPane(mainCon);
+		
 		sideContentpane = new JPanel();
+		sideContentpane.setBounds(24, 10, 117, 600);
 		sideContentpane.setBorder(new EmptyBorder(5, 5, 5, 5));
-		setContentPane(sideContentpane);
 		sideContentpane.setLayout(null);
+		mainCon.add(sideContentpane);
 		
 		listContentpane = new JPanel();
 		listContentpane.setBackground(new Color(223, 255, 240));
-		listContentpane.setBounds(132, 97, 275, 497);
-		sideContentpane.add(listContentpane);
-//		
+		listContentpane.setBounds(140, 10, 281, 600);
+		mainCon.add(listContentpane);
+		
 //		JScrollPane scrollPane = new JScrollPane();
 //		scrollPane.setBounds(93, 76, 351, 518);
 //		contentPane.add(scrollPane);
@@ -97,6 +106,31 @@ public class JavaObjClientView extends JFrame {
 		UserName = username;
 		IpAddr = ip_addr;
 		PortNo = port_no;
+		
+		JButton btnProfileButton = new JButton("친구"); // 메인화면 버튼
+		btnProfileButton.setFont(new Font("굴림", Font.PLAIN, 14));
+		btnProfileButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				ChatMsg msg = new ChatMsg(UserName, "900", username);
+				SendObject(msg);
+				FriendListview = new JavaObjClientFriendListView(UserName, Mainview);
+				//setVisible(false);
+			}
+		});
+		btnProfileButton.setBounds(12, 41, 69, 40);
+		sideContentpane.add(btnProfileButton);
+		
+		JButton btnChatListButton = new JButton("채팅"); // 채팅방 목록 버튼
+		btnChatListButton.setFont(new Font("굴림", Font.PLAIN, 14));
+		btnChatListButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				ChatMsg msg = new ChatMsg(UserName, "500", username);
+				SendObject(msg);
+				ChatListview = new JavaObjClientChatListView(UserName, Mainview);
+				listContentpane.add(ChatListview);
+				//ChatListview.setVisible(true);
+			} // username에 맞는 채팅방 불러오기
+		});
 		//if (username ) // user 미리 등록? >> 프로필 불러오기
 		//UserImg =  
 		
@@ -111,32 +145,7 @@ public class JavaObjClientView extends JFrame {
 		});
 		btnNewButton.setBounds(12, 554, 69, 40);
 		sideContentpane.add(btnNewButton);
-		
-		JButton btnProfileButton = new JButton("친구"); // 메인화면 버튼
-		btnProfileButton.setFont(new Font("굴림", Font.PLAIN, 14));
-		btnProfileButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				ChatMsg msg = new ChatMsg(UserName, "900", username);
-				SendObject(msg);
-				FriendListview = new JavaObjClientFriendListView(UserName, Mainview);
-				//setVisible(false);
-			}
-		});
-		btnProfileButton.setBounds(12, 97, 69, 40);
-		sideContentpane.add(btnProfileButton);
-		
-		JButton btnChatListButton = new JButton("채팅"); // 채팅방 목록 버튼
-		btnChatListButton.setFont(new Font("굴림", Font.PLAIN, 14));
-		btnChatListButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				ChatMsg msg = new ChatMsg(UserName, "500", username);
-				SendObject(msg);
-				ChatListview = new JavaObjClientChatListView(UserName, Mainview);
-				listContentpane.add(ChatListview);
-				//ChatListview.setVisible(true);
-			} // username에 맞는 채팅방 불러오기
-		});
-		btnChatListButton.setBounds(12, 170, 69, 40);
+		btnChatListButton.setBounds(12, 148, 69, 40);
 		sideContentpane.add(btnChatListButton);
 		
 		setVisible(true);

@@ -9,30 +9,29 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
-class UserProfile extends JFrame {
+class UserProfile extends JPanel {
 	private JPanel contentPane;
 	private JLabel userName;
 	private JLabel profileImg;
 	private JLabel stateMsg;
 	
-	private static final long serialVersionUID = 1L;
 	private String username; 
 	private String statemsg; 
 	private String data;
 	public ImageIcon profileimg;
-	//public String chatroomId;
+	//public String chatroomid;
 	//public Vector<String> chatuserlists;
 
-	public UserProfile(String username, String statemsg, ImageIcon profileimg) {
+	public UserProfile() {
 		this.username = username;
 		this.statemsg = statemsg;
 		this.profileimg = profileimg;
 		
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 200, 100);
+		setLayout(null);
+		//setBounds(100, 100, 200, 100);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-		setContentPane(contentPane);
+		//setContentPane(contentPane);
 		contentPane.setLayout(null);
 		
 		userName = new JLabel(username);

@@ -216,7 +216,7 @@ public class JavaObjServer extends JFrame {
 			try {
 				for (int i = 0; i < user_vc.size(); i++) {
 					UserService user = (UserService) user_vc.elementAt(i);
-					FriendName.concat(user.UserName + " ");
+					//FriendName.concat(user.UserName + " ");
 				}
 				ChatMsg obcm = new ChatMsg("SERVER", "100", FriendName);
 				oos.writeObject(obcm);
@@ -315,25 +315,20 @@ public class JavaObjServer extends JFrame {
 		public void ViewChatList(Object ob) { // 500
 			try {
 				ChatMsg obcm = (ChatMsg) ob;
-				String chatId = obcm.getChatroomid();
-				String[] args = chatId.split(" "); // 단어들을 분리한다.
-				int check = 0;
+				String userlist = new String();
+				//String chatId = obcm.getChatroomid();
+				//String[] args = chatId.split(" "); // 단어들을 분리한다.
+				//int check = 0;
 				//if (args[i] == chatroom_id)
 				for (int j = 0; j < chatservice.room_vc.size(); j ++) {
 					ChatService chat = (ChatService) chatservice.room_vc.elementAt(j);
-					if (args[check] == chat.Chatroom_id) {
-						chatId.concat(chat);
+					if (obcm.getId() == chat.Chatroom_user) {
+						userlist = userlist.concat(chat.Chatroom_id + " ");
+						//check++;
 					}
-				for (int i = 0; i < user_vc.size(); i++) {
-					UserService user = (UserService) user_vc.elementAt(i);
-					if (user == this) {
-						ChatMsg obcm = new ChatMsg(user.UserName, "500", "chatID");
-						obcm.chatuserlists = user.ChatRoom;
-						//채팅방 참가자
-						oos.writeObject(obcm);
-						}
-					}
-				}
+				}		
+				ChatMsg sobcm = new ChatMsg(obcm.getId(), "500", userlist);	//채팅방 목록 전달
+				oos.writeObject(obcm);
 			} catch (IOException e1) {
 				AppendText("Server :: 500 오류!!");
 				e1.printStackTrace();
