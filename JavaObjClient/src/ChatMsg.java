@@ -1,6 +1,8 @@
 
 // ChatMsg.java 채팅 메시지 ObjectStream 용.
 import java.io.Serializable;
+import java.util.Vector;
+
 import javax.swing.ImageIcon;
 
 class ChatMsg implements Serializable {
@@ -9,6 +11,8 @@ class ChatMsg implements Serializable {
 	private String code; // 100:로그인, 400:로그아웃, 200:채팅메시지, 300:Image
 	private String data;
 	public ImageIcon img;
+	public String chatroomid;
+	public String chatuserlists;
 
 	public ChatMsg(String id, String code, String msg) {
 		this.id = id;
@@ -40,7 +44,24 @@ class ChatMsg implements Serializable {
 		this.data = data;
 	}
 
+	public ImageIcon getImg() {
+		return img;
+	}
 	public void setImg(ImageIcon img) {
 		this.img = img;
+	}
+	
+	public String getChatroomid() {
+		return chatroomid;
+	}
+	public void setChatroomId(String chatroomid) {
+		this.chatroomid = chatroomid;
+	}
+	
+	public String getChatuserlists() {
+		return chatuserlists;
+	}
+	public void setChatuserlists(String chatuserlists) {
+		this.chatuserlists = chatuserlists;
 	}
 }
