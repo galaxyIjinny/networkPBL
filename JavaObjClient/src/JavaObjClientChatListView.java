@@ -77,14 +77,13 @@ public class JavaObjClientChatListView extends JPanel {
 	 * Create the frame.
 	 */
 	public JavaObjClientChatListView(String username, JavaObjClientView mainview) {
-		frame = mainview;
-		//setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(150, 150, 200, 200);
 		setBackground(new Color(255, 255, 255));
 		setBorder(new EmptyBorder(5, 5, 5, 5));
 		//setContentPane(contentPane);
 		setLayout(null);
 		//frame.getContentPane().add(this);
+		mainview.add(this);
 		
 		//Container con = frame.getContentPane();
 		//con.add(this);
@@ -93,16 +92,6 @@ public class JavaObjClientChatListView extends JPanel {
 		chatroomLabel.setText(username);
 		chatroomLabel.setBounds(150, 150, 50, 50);
 		add(chatroomLabel);
-		
-//		JScrollPane scrollPane = new JScrollPane();
-//		scrollPane.setBounds(93, 76, 351, 518);
-//		contentPane.add(scrollPane);
-//		
-		textArea = new JTextPane();
-		textArea.setEditable(true);
-		textArea.setFont(new Font("±¼¸²Ã¼", Font.PLAIN, 14));
-		add(textArea);
-		
 		
 		ChatMsg msg = new ChatMsg(UserName, "200", "clist");
 		//msg.setChatroom("chat11");
@@ -115,9 +104,8 @@ public class JavaObjClientChatListView extends JPanel {
 			if (user.UserStatus == "O")
 		}*/
 		
-		UserName = username;
 		
-		mainview.AppendText("User chatroom" + username);
+		mainview.AppendText("User chatroom " + username);
 		setVisible(true);
 
 		

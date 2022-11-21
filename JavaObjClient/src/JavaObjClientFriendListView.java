@@ -45,7 +45,7 @@ public class JavaObjClientFriendListView extends JPanel {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private JPanel contentPane;
+	private JPanel FriendPane;
 	private String UserName;
 	private String IpAddr;
 	private String PortNo;
@@ -58,7 +58,7 @@ public class JavaObjClientFriendListView extends JPanel {
 	private ObjectInputStream ois;
 	private ObjectOutputStream oos;
 
-	private JLabel lblUserName;
+	private JLabel friendUser;
 	// private JTextArea textArea;
 	private JTextPane textArea;
 	private JTextPane myTextArea;
@@ -66,37 +66,32 @@ public class JavaObjClientFriendListView extends JPanel {
 	private Frame frame;
 	private FileDialog fd;
 
+	public UserProfile userpro;
+	public JavaObjClientView mainclient;
 	public JavaObjClientChatListView ChatListview;
 	//public JavaObjClientNotice noticeview;
 	
 	/**
 	 * Create the frame.
 	 */
-	public JavaObjClientFriendListView(String username, JavaObjClientView mainview) {
-		frame = mainview;
-		//setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		//setBounds(100, 100, 472, 668);
-		contentPane = new JPanel();
-		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-		//setContentPane(contentPane);
-		frame.add(contentPane);
-		contentPane.setLayout(null);
-//
-//		JScrollPane scrollPane = new JScrollPane();
-//		scrollPane.setBounds(93, 76, 351, 518);
-//		contentPane.add(scrollPane);
-			
-		textArea = new JTextPane();
-		textArea.setEditable(true);
-		textArea.setFont(new Font("±¼¸²Ã¼", Font.PLAIN, 14));
-		contentPane.add(textArea);
-		
-		
-			
-		mainview.AppendText("User " + username + "friend lists");
+	public JavaObjClientFriendListView(String username, JavaObjClientView mainview, String friendlist) {
+		setBorder(new EmptyBorder(5, 5, 5, 5));
+		setLayout(null);
 		
 		ChatMsg obcm = new ChatMsg(UserName, "200", "flist");
 		mainview.SendObject(obcm);
+		
+		String[] getfriend = friendlist.split(" ");
+		for (int i = 0; i < getfriend.length; i++) {
+			//friendpane[i] = new JPanel();
+			//add(userpro(getfriend[i]));
+		}
+		//setContentPane(contentPane);
+		mainview.add(this);
+		
+		mainview.AppendText("User " + username + " friend lists");
+		
+		
 		setVisible(true);
 		
 	}

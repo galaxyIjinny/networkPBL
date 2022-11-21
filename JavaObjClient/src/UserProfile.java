@@ -11,6 +11,7 @@ import javax.swing.border.EmptyBorder;
 
 class UserProfile extends JPanel {
 	private JPanel contentPane;
+	
 	private JLabel userName;
 	private JLabel profileImg;
 	private JLabel stateMsg;
@@ -22,27 +23,28 @@ class UserProfile extends JPanel {
 	//public String chatroomid;
 	//public Vector<String> chatuserlists;
 
-	public UserProfile() {
+	public UserProfile(String username) {
 		this.username = username;
 		this.statemsg = statemsg;
 		this.profileimg = profileimg;
 		
 		setLayout(null);
-		//setBounds(100, 100, 200, 100);
-		contentPane = new JPanel();
-		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-		//setContentPane(contentPane);
-		contentPane.setLayout(null);
 		
+		contentPane = new JPanel();
+		contentPane.setLayout(null);
+//		//setContentPane(contentPane);
+
 		userName = new JLabel(username);
-		userName.setBounds(0, 28, 18, -28);
+		userName.setBounds(66, 10, 80, 21);
+		contentPane.add(userName);
 		
 		ImageIcon userImg = profileimg;
 		profileImg = new JLabel(userImg);
-		stateMsg = new JLabel(statemsg);
-		
-		contentPane.add(userName);
+		profileImg.setBounds(5, 53, 58, -48);
 		contentPane.add(profileImg);
+		
+		stateMsg = new JLabel(statemsg);
+		stateMsg.setBounds(66, 30, 126, 21);
 		contentPane.add(stateMsg);
 	}
 	

@@ -155,7 +155,7 @@ public class JavaObjServer extends JFrame {
 		public ImageIcon Chatimg;
 		
 		public ChatService(String id, String userlist) {
-			this.room_vc = RoomVec;
+			//this.room_vc = RoomVec; // 채팅방 생성시에 사용
 			this.Chatroom_id = id;
 			this.Chatroom_user = userlist;
 		}
@@ -169,7 +169,7 @@ public class JavaObjServer extends JFrame {
 		}
 		
 		public String getChatroom_user() {
-			return Chatroom_id;
+			return Chatroom_user;
 		}
 
 		public void setChatroom_user(String Chatroom_user) {
@@ -338,15 +338,15 @@ public class JavaObjServer extends JFrame {
 		
 		public void ViewFriendList(Object ob) { // 900
 			try {
-				String userlist = new String();
+				String friendlist = new String();
 				for (int i = 0; i < user_vc.size(); i++) {
 					UserService user = (UserService) user_vc.elementAt(i);
 //					if (user == this) {
 //						//본인인 경우
 //					}
-					userlist.concat(user.UserName + " ");
-					ChatMsg obcm = new ChatMsg(user.UserName, "900", "chatID");
-					obcm.chatuserlists = userlist;
+					friendlist.concat(user.UserName + " ");
+					ChatMsg obcm = new ChatMsg(user.UserName, "900", friendlist);
+					//obcm.chatuserlists = friendlist;
 					oos.writeObject(obcm);
 				}
 			} catch (IOException e1) {
@@ -493,7 +493,7 @@ public class JavaObjServer extends JFrame {
 					} else if (cm.getCode().matches("802")) { // 투표 결과
 						
 					}
-					else if (cm.getCode().matches("900")) { // 메인 화면
+					else if (cm.getCode().matches("900")) { // 친구 목록 화면
 						AppendText("900 receive");
 						ViewFriendList(cm);
 					}

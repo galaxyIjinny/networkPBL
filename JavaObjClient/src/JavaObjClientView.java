@@ -38,6 +38,8 @@ import javax.swing.border.BevelBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.JToggleButton;
 
+//import JavaObjServer;
+
 public class JavaObjClientView extends JFrame {
 	/**
 	 * 
@@ -49,7 +51,7 @@ public class JavaObjClientView extends JFrame {
 	private String UserName;
 	private String IpAddr;
 	private String PortNo;
-	private String myChatRooms;
+	private String myChatRoomIds;
 	private String myFriends;
 	private static final int BUF_LEN = 128; // Windows 처럼 BUF_LEN 을 정의
 	private Socket socket; // 연결소켓
@@ -69,6 +71,7 @@ public class JavaObjClientView extends JFrame {
 	public JavaObjClientView Mainview = this;
 	public JavaObjClientChatListView ChatListview;
 	public JavaObjClientFriendListView FriendListview;
+	//public JavaObjServer chatservice;
 	//public JavaObjClientNotice noticeview;
 	
 	/**
@@ -96,10 +99,9 @@ public class JavaObjClientView extends JFrame {
 //		scrollPane.setBounds(93, 76, 351, 518);
 //		contentPane.add(scrollPane);
 
-		textArea = new JTextPane();
-		textArea.setEditable(true);
-		textArea.setFont(new Font("굴림체", Font.PLAIN, 14));
-		sideContentpane.add(textArea);
+		textArea= new JTextPane();
+		textArea.setBounds(150, 200, 100, 100);
+		listContentpane.add(textArea);
 		
 
 		AppendText("User " + username + " connecting " + ip_addr + " " + port_no);
@@ -113,8 +115,8 @@ public class JavaObjClientView extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				ChatMsg msg = new ChatMsg(UserName, "900", username);
 				SendObject(msg);
-				FriendListview = new JavaObjClientFriendListView(UserName, Mainview);
-				//setVisible(false);
+				FriendListview = new JavaObjClientFriendListView(UserName, Mainview, myFriends);
+				listContentpane.add(FriendListview);
 			}
 		});
 		btnProfileButton.setBounds(12, 41, 69, 40);
@@ -209,8 +211,21 @@ public class JavaObjClientView extends JFrame {
 						//myChatRoom = cm.chatroomId;
 						//JavaObjClientChatListView view = new JavaObjClientChatListView(UserName, IpAddr, PortNo, myChatRoom);
 						//setVisible(false);
-						myChatRooms = cm.getChatroomid();
-						
+						myChatRoomIds = cm.getChatroomid();
+						String[] chatlist = myChatRoomIds.split(" "); // 단어들을 분리한다.
+						//int check = 0;
+						//if (args[i] == chatroom_id)
+//						for (int j = 0; j < chatlist.length; j ++) {
+//							ChatService chat = (ChatService) chatservice.room_vc.elementAt(j);
+//							if (obcm.getId() == chat.Chatroom_user) {
+//								userlist = userlist.concat(chat.Chatroom_id + " ");
+//								//check++;
+//							}
+//						}
+						AppendText(myChatRoomIds);
+						break;
+					case "900": // 친구 버튼 >> 친구 리스트
+						myFriends = cm.getData();
 						break;
 					}
 				} catch (IOException e) {
