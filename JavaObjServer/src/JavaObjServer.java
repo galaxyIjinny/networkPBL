@@ -40,7 +40,7 @@ public class JavaObjServer extends JFrame {
 	private ServerSocket socket; // 서버소켓
 	private Socket client_socket; // accept() 에서 생성된 client 소켓
 	private Vector UserVec = new Vector(); // 연결된 사용자를 저장할 벡터
-	private Vector RoomVec = new Vector(); // 전체 채팅방 관리를 위한 벡터
+	private Vector RoomVec = new Vector(); // 전체 채팅방 관리를 위한 벡터(채팅방 생성시 사용)
 	
 	public String Chatroom_id; // 채팅방 목록(참가중인 id)
 	public String Chatroom_user; // 채팅방 참가자
@@ -117,6 +117,7 @@ public class JavaObjServer extends JFrame {
 	class AcceptServer extends Thread {
 		@SuppressWarnings("unchecked")
 		public void run() {
+			//ChatService chatmanager = new ChatService();
 			while (true) { // 사용자 접속을 계속해서 받기 위해 while문
 				try {
 					AppendText("Waiting new clients ...");
@@ -148,6 +149,8 @@ public class JavaObjServer extends JFrame {
 	}
 
 	// 채팅방 관리
+	//UserService new_user = new UserService(client_socket);
+	//UserVec.add(new_user); // 새로운 참가자 배열에 추가
 	class ChatService {
 		private Vector room_vc;
 		public String Chatroom_id;
@@ -155,9 +158,16 @@ public class JavaObjServer extends JFrame {
 		public ImageIcon Chatimg;
 		
 		public ChatService(String id, String userlist) {
+			Chatroom_id = Chatroom_id.concat(id + " ");
+			Chatroom_user = Chatroom_user.concat(userlist + " ");
+			this.room_vc = RoomVec;
+			//RoomVec.add(id, userlist);
+		}
+		
+		public void makeChatroom(String id, String userlist) {
 			//this.room_vc = RoomVec; // 채팅방 생성시에 사용
-			this.Chatroom_id = id;
-			this.Chatroom_user = userlist;
+			
+			
 		}
 		
 		public String getChatroom_id() {
@@ -214,10 +224,10 @@ public class JavaObjServer extends JFrame {
 		public void Login() {
 			AppendText("서버에 " + UserName + " 님이 입장하셨습니다.");
 			try {
-				for (int i = 0; i < user_vc.size(); i++) {
-					UserService user = (UserService) user_vc.elementAt(i);
-					//FriendName.concat(user.UserName + " ");
-				}
+//				for (int i = 0; i < user_vc.size(); i++) {
+//					UserService user = (UserService) user_vc.elementAt(i);
+//					//FriendName.concat(user.UserName + " ");
+//				}
 				ChatMsg obcm = new ChatMsg("SERVER", "100", FriendName);
 				oos.writeObject(obcm);
 			} catch (IOException e) {
@@ -320,13 +330,20 @@ public class JavaObjServer extends JFrame {
 				//String[] args = chatId.split(" "); // 단어들을 분리한다.
 				//int check = 0;
 				//if (args[i] == chatroom_id)
+				if (chatservice.room_vc == null) {
+					userlist = userlist.concat(" ");
+				} else  {
 				for (int j = 0; j < chatservice.room_vc.size(); j ++) {
+					if (chatservice.room_vc.size() == 0) {
+						userlist = userlist.concat(" "); // 채팅방이 빈 상태처리
+						break;
+					}
 					ChatService chat = (ChatService) chatservice.room_vc.elementAt(j);
 					if (obcm.getId() == chat.Chatroom_user) {
 						userlist = userlist.concat(chat.Chatroom_id + " ");
 						//check++;
 					}
-				}		
+				}		}
 				ChatMsg sobcm = new ChatMsg(obcm.getId(), "500", userlist);	//채팅방 목록 전달
 				oos.writeObject(obcm);
 			} catch (IOException e1) {
@@ -472,7 +489,7 @@ public class JavaObjServer extends JFrame {
 						break;
 					} 
 					else if (cm.getCode().matches("500")) { // 채팅방 리스트
-						AppendText("test Server");
+						AppendText("500 received");
 						ViewChatList(cm); // 채팅방 정보 전송
 						
 					}
@@ -494,7 +511,7 @@ public class JavaObjServer extends JFrame {
 						
 					}
 					else if (cm.getCode().matches("900")) { // 친구 목록 화면
-						AppendText("900 receive");
+						AppendText("900 received");
 						ViewFriendList(cm);
 					}
 					

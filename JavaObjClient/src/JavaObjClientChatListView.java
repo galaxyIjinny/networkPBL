@@ -76,7 +76,7 @@ public class JavaObjClientChatListView extends JPanel {
 	/**
 	 * Create the frame.
 	 */
-	public JavaObjClientChatListView(String username, JavaObjClientView mainview) {
+	public JavaObjClientChatListView(String username, JavaObjClientView mainview, String roomids) {
 		setBounds(150, 150, 200, 200);
 		setBackground(new Color(255, 255, 255));
 		setBorder(new EmptyBorder(5, 5, 5, 5));

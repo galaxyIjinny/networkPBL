@@ -128,7 +128,7 @@ public class JavaObjClientView extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				ChatMsg msg = new ChatMsg(UserName, "500", username);
 				SendObject(msg);
-				ChatListview = new JavaObjClientChatListView(UserName, Mainview);
+				ChatListview = new JavaObjClientChatListView(UserName, Mainview, myChatRoomIds);
 				listContentpane.add(ChatListview);
 				//ChatListview.setVisible(true);
 			} // username에 맞는 채팅방 불러오기
@@ -208,9 +208,6 @@ public class JavaObjClientView extends JFrame {
 					case "500": // 채팅 버튼 >> 채팅 리스트. 받은 정보로 화면 전환
 						//AppendText("test Client");
 						//search >> chatroomid1.~~로 
-						//myChatRoom = cm.chatroomId;
-						//JavaObjClientChatListView view = new JavaObjClientChatListView(UserName, IpAddr, PortNo, myChatRoom);
-						//setVisible(false);
 						myChatRoomIds = cm.getChatroomid();
 						String[] chatlist = myChatRoomIds.split(" "); // 단어들을 분리한다.
 						//int check = 0;
@@ -226,6 +223,7 @@ public class JavaObjClientView extends JFrame {
 						break;
 					case "900": // 친구 버튼 >> 친구 리스트
 						myFriends = cm.getData();
+						
 						break;
 					}
 				} catch (IOException e) {

@@ -83,6 +83,7 @@ public class JavaObjClientFriendListView extends JPanel {
 		
 		String[] getfriend = friendlist.split(" ");
 		for (int i = 0; i < getfriend.length; i++) {
+			mainview.AppendText(getfriend[i]);
 			//friendpane[i] = new JPanel();
 			//add(userpro(getfriend[i]));
 		}
